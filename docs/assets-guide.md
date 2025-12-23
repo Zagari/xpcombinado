@@ -45,36 +45,36 @@
 ### Screenshots Sugeridos (5-8 imagens)
 
 1. **Tela de Login**
-   - Texto: "Comece agora!"
-   - Mostrar a tela de boas-vindas
+   - Texto: "Acesse com codigo por email"
+   - Mostrar a tela de login simples
 
 2. **Lista de Filhos**
    - Texto: "Gerencie todos os seus filhos"
-   - Mostrar cards de filhos
+   - Mostrar cards de filhos com engrenagem de config
 
 3. **Tela de Atividades**
-   - Texto: "39 atividades para completar"
+   - Texto: "Atividades personalizaveis"
    - Mostrar lista de atividades
 
 4. **Atividade Marcada**
    - Texto: "Marque com um toque"
    - Mostrar atividade com check verde
 
-5. **Pontuação**
-   - Texto: "Veja os pontos acumulados"
-   - Destacar o painel de pontos
+5. **Menu de Configuracoes**
+   - Texto: "Personalize tudo!"
+   - Mostrar menu com opcoes de Atividades e Tempo de Tela
 
-6. **Tempo de Tela**
-   - Texto: "Conversão automática em tempo de tela"
-   - Destacar o tempo conquistado
+6. **Configurar Atividades**
+   - Texto: "Adicione, edite ou remova atividades"
+   - Mostrar tela de configuracao de atividades
 
-7. **Categorias**
-   - Texto: "6 categorias de atividades"
-   - Mostrar diferentes categorias
+7. **Configurar Tempo de Tela**
+   - Texto: "Ajuste a tabela de conversao"
+   - Mostrar tela de configuracao de tempo
 
-8. **Reset**
-   - Texto: "Comece cada dia do zero"
-   - Mostrar botão de reset
+8. **Pontuacao e Tempo**
+   - Texto: "Veja o tempo conquistado"
+   - Destacar o painel de pontos e tempo de tela
 
 ### Como Capturar Screenshots
 

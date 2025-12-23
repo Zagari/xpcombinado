@@ -16,19 +16,25 @@ O XP Combinado usa gamificação para motivar crianças a realizarem suas ativid
 
 ✨ PRINCIPAIS RECURSOS
 
-• 39 atividades em 6 categorias: higiene pessoal, organização, tarefas domésticas, cuidados com pets, desenvolvimento pessoal e comportamento
+• Atividades personalizaveis em 6 categorias: higiene pessoal, organizacao, tarefas domesticas, cuidados com pets, desenvolvimento pessoal e comportamento
 
-• Sistema de pontos intuitivo: cada atividade tem uma pontuação baseada em seu esforço e importância
+• Sistema de pontos configuravel: cada atividade tem uma pontuacao que voce pode ajustar
 
-• Conversão automática: os pontos são convertidos em tempo de tela (10 pts = 15 min, até 80 pts = 2 horas)
+• Conversao automatica: os pontos sao convertidos em tempo de tela
 
-• Múltiplos filhos: gerencie as atividades de todos os seus filhos em um só lugar
+• Tabela de conversao personalizavel: configure quantos pontos sao necessarios para cada faixa de tempo
+
+• Multiplos filhos: gerencie as atividades de todos os seus filhos em um so lugar
+
+• Login seguro: acesse com codigo enviado por email (sem senha!)
 
 • Interface simples: marque as atividades com um toque
 
-• Reset diário: comece cada dia do zero
+• Reset diario: comece cada dia do zero
 
-📊 TABELA DE CONVERSÃO
+• Restaurar padroes: volte as configuracoes originais a qualquer momento
+
+📊 TABELA DE CONVERSAO PADRAO
 
 10 pontos = 15 minutos
 20 pontos = 30 minutos
@@ -36,6 +42,8 @@ O XP Combinado usa gamificação para motivar crianças a realizarem suas ativid
 40 pontos = 1 hora
 60 pontos = 1h30
 80 pontos = 2 horas
+
+(Voce pode personalizar esses valores!)
 
 👨‍👩‍👧 PARA PAIS
 
@@ -65,10 +73,17 @@ tarefas,crianças,tempo de tela,gamificação,educação,família,rotina,hábito
 - Google Play: Livre
 - App Store: 4+
 
-## O que há de novo (Release Notes)
-Versão 1.0.0
-• Lançamento inicial do XP Combinado
+## O que ha de novo (Release Notes)
+Versao 1.1.0
+• Atividades personalizaveis: adicione, edite ou remova atividades
+• Tabela de conversao personalizavel: ajuste pontos e tempo de tela
+• Login simplificado com codigo por email (sem senha!)
+• Validacao inteligente na configuracao de tempo de tela
+• Melhorias de usabilidade e desempenho
+
+Versao 1.0.0
+• Lancamento inicial do XP Combinado
 • 39 atividades em 6 categorias
-• Sistema de pontos e conversão em tempo de tela
-• Suporte a múltiplos filhos
-• Interface intuitiva e fácil de usar
+• Sistema de pontos e conversao em tempo de tela
+• Suporte a multiplos filhos
+• Interface intuitiva e facil de usar
