@@ -45,7 +45,7 @@
 ### Screenshots Sugeridos (5-8 imagens)
 
 1. **Tela de Login**
-   - Texto: "Acesse com codigo por email"
+   - Texto: "Acesse com código por email"
    - Mostrar a tela de login simples
 
 2. **Lista de Filhos**
@@ -53,26 +53,26 @@
    - Mostrar cards de filhos com engrenagem de config
 
 3. **Tela de Atividades**
-   - Texto: "Atividades personalizaveis"
+   - Texto: "Atividades personalizáveis"
    - Mostrar lista de atividades
 
 4. **Atividade Marcada**
    - Texto: "Marque com um toque"
    - Mostrar atividade com check verde
 
-5. **Menu de Configuracoes**
+5. **Menu de Configurações**
    - Texto: "Personalize tudo!"
-   - Mostrar menu com opcoes de Atividades e Tempo de Tela
+   - Mostrar menu com opções de Atividades e Tempo de Tela
 
 6. **Configurar Atividades**
    - Texto: "Adicione, edite ou remova atividades"
-   - Mostrar tela de configuracao de atividades
+   - Mostrar tela de configuração de atividades
 
 7. **Configurar Tempo de Tela**
-   - Texto: "Ajuste a tabela de conversao"
-   - Mostrar tela de configuracao de tempo
+   - Texto: "Ajuste a tabela de conversão"
+   - Mostrar tela de configuração de tempo
 
-8. **Pontuacao e Tempo**
+8. **Pontuação e Tempo**
    - Texto: "Veja o tempo conquistado"
    - Destacar o painel de pontos e tempo de tela
 

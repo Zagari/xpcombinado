@@ -9,6 +9,7 @@ import {
   Modal,
   TextInput,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenTimeSettingsScreenProps } from '../navigation/types';
 import { useAuthStore, useScreenTimeStore } from '../stores';
 import { UserScreenTimeConversion } from '../types';
@@ -26,6 +27,7 @@ function formatMinutesLabel(minutes: number): string {
 }
 
 export default function ScreenTimeSettingsScreen({ navigation }: ScreenTimeSettingsScreenProps) {
+  const insets = useSafeAreaInsets();
   const { user } = useAuthStore();
   const { conversions, fetchConversions, updateConversion, resetToDefaults, isLoading } =
     useScreenTimeStore();
@@ -60,13 +62,13 @@ export default function ScreenTimeSettingsScreen({ navigation }: ScreenTimeSetti
       )
       .sort((a, b) => a.points - b.points);
 
-    // Verificar se os minutos estao em ordem crescente conforme os pontos aumentam
+    // Verificar se os minutos estão em ordem crescente conforme os pontos aumentam
     for (let i = 1; i < updatedConversions.length; i++) {
       const prev = updatedConversions[i - 1];
       const curr = updatedConversions[i];
 
       if (curr.minutes < prev.minutes) {
-        return `Faixas com mais pontos devem ter mais tempo de tela. ${curr.points} pts (${formatMinutesLabel(curr.minutes)}) nao pode ter menos tempo que ${prev.points} pts (${formatMinutesLabel(prev.minutes)}).`;
+        return `Faixas com mais pontos devem ter mais tempo de tela. ${curr.points} pts (${formatMinutesLabel(curr.minutes)}) não pode ter menos tempo que ${prev.points} pts (${formatMinutesLabel(prev.minutes)}).`;
       }
     }
 
@@ -92,7 +94,7 @@ export default function ScreenTimeSettingsScreen({ navigation }: ScreenTimeSetti
     // Validar consistencia da tabela
     const validationError = validateConversion(pointsNum, minutesNum);
     if (validationError) {
-      Alert.alert('Erro de Validacao', validationError);
+      Alert.alert('Erro de Validação', validationError);
       return;
     }
 
@@ -107,8 +109,8 @@ export default function ScreenTimeSettingsScreen({ navigation }: ScreenTimeSetti
 
   const handleReset = () => {
     Alert.alert(
-      'Restaurar Padrao',
-      'Isso vai restaurar a tabela de conversao para os valores originais. Deseja continuar?',
+      'Restaurar Padrão',
+      'Isso vai restaurar a tabela de conversão para os valores originais. Deseja continuar?',
       [
         { text: 'Cancelar', style: 'cancel' },
         {
@@ -120,7 +122,7 @@ export default function ScreenTimeSettingsScreen({ navigation }: ScreenTimeSetti
             if (error) {
               Alert.alert('Erro', error);
             } else {
-              Alert.alert('Sucesso', 'Tabela restaurada para o padrao');
+              Alert.alert('Sucesso', 'Tabela restaurada para o padrão');
             }
           },
         },
@@ -147,15 +149,15 @@ export default function ScreenTimeSettingsScreen({ navigation }: ScreenTimeSetti
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Conversao de Pontos</Text>
+        <Text style={styles.headerTitle}>Conversão de Pontos</Text>
         <Text style={styles.headerSubtitle}>
-          {conversions.length} faixas de conversao
+          {conversions.length} faixas de conversão
         </Text>
       </View>
 
       <View style={styles.infoBox}>
         <Text style={styles.infoText}>
-          Configure quantos pontos sao necessarios para ganhar tempo de tela
+          Configure quantos pontos são necessários para ganhar tempo de tela
         </Text>
       </View>
 
@@ -166,8 +168,11 @@ export default function ScreenTimeSettingsScreen({ navigation }: ScreenTimeSetti
         contentContainerStyle={styles.listContent}
       />
 
-      <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-        <Text style={styles.resetText}>Restaurar Padrao</Text>
+      <TouchableOpacity
+        style={[styles.resetButton, { bottom: 24 + insets.bottom }]}
+        onPress={handleReset}
+      >
+        <Text style={styles.resetText}>Restaurar Padrão</Text>
       </TouchableOpacity>
 
       {/* Modal para Editar */}
@@ -179,9 +184,9 @@ export default function ScreenTimeSettingsScreen({ navigation }: ScreenTimeSetti
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Editar Conversao</Text>
+            <Text style={styles.modalTitle}>Editar Conversão</Text>
 
-            <Text style={styles.inputLabel}>Pontos necessarios</Text>
+            <Text style={styles.inputLabel}>Pontos necessários</Text>
             <TextInput
               style={styles.modalInput}
               placeholder="10"
@@ -314,7 +319,6 @@ const styles = StyleSheet.create({
   },
   resetButton: {
     position: 'absolute',
-    bottom: 24,
     left: 24,
     right: 24,
     backgroundColor: '#fff',

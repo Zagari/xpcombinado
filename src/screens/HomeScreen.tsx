@@ -75,7 +75,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <View>
-            <Text style={styles.greeting}>Ola!</Text>
+            <Text style={styles.greeting}>Olá!</Text>
             <Text style={styles.email}>{user?.email}</Text>
           </View>
           <TouchableOpacity

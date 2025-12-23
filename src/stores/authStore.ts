@@ -61,7 +61,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     // For test account, use password authentication
     if (isTestAccount(email)) {
       if (token !== TEST_ACCOUNT.otpCode) {
-        return { error: 'Codigo invalido' };
+        return { error: 'Código inválido' };
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({

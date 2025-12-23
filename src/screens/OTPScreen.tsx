@@ -56,7 +56,7 @@ export default function OTPScreen({ route, navigation }: OTPScreenProps) {
     const otpCode = code || otp.join('');
 
     if (otpCode.length !== 6) {
-      Alert.alert('Erro', 'Digite o codigo completo de 6 digitos');
+      Alert.alert('Erro', 'Digite o código completo de 6 dígitos');
       return;
     }
 
@@ -65,7 +65,7 @@ export default function OTPScreen({ route, navigation }: OTPScreenProps) {
     setIsLoading(false);
 
     if (error) {
-      Alert.alert('Erro', 'Codigo invalido ou expirado');
+      Alert.alert('Erro', 'Código inválido ou expirado');
       setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
     }
@@ -81,7 +81,7 @@ export default function OTPScreen({ route, navigation }: OTPScreenProps) {
     if (error) {
       Alert.alert('Erro', error);
     } else {
-      Alert.alert('Sucesso', 'Novo codigo enviado para seu email');
+      Alert.alert('Sucesso', 'Novo código enviado para seu email');
       setResendTimer(60);
       setOtp(['', '', '', '', '', '']);
     }
@@ -95,7 +95,7 @@ export default function OTPScreen({ route, navigation }: OTPScreenProps) {
       <View style={styles.content}>
         <Text style={styles.title}>Verificar Email</Text>
         <Text style={styles.subtitle}>
-          Digite o codigo de 6 digitos enviado para{'\n'}
+          Digite o código de 6 dígitos enviado para{'\n'}
           <Text style={styles.emailText}>{email}</Text>
         </Text>
 
@@ -133,8 +133,8 @@ export default function OTPScreen({ route, navigation }: OTPScreenProps) {
         >
           <Text style={[styles.resendText, resendTimer > 0 && styles.resendTextDisabled]}>
             {resendTimer > 0
-              ? `Reenviar codigo em ${resendTimer}s`
-              : 'Reenviar codigo'}
+              ? `Reenviar código em ${resendTimer}s`
+              : 'Reenviar código'}
           </Text>
         </TouchableOpacity>
 

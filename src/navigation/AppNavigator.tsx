@@ -71,7 +71,7 @@ export default function AppNavigator() {
             <Stack.Screen
               name="Settings"
               component={SettingsScreen}
-              options={{ title: 'Configuracoes' }}
+              options={{ title: 'Configurações' }}
             />
             <Stack.Screen
               name="ActivitiesSettings"

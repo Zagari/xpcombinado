@@ -8,6 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ActivitiesScreenProps } from '../navigation/types';
 import { useChildrenStore, useActivitiesStore, useAuthStore, useScreenTimeStore } from '../stores';
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '../constants/activities';
@@ -15,6 +16,7 @@ import { UserActivity, ActivityCategory } from '../types';
 import ActivityCard from '../components/ActivityCard';
 
 export default function ActivitiesScreen({ navigation }: ActivitiesScreenProps) {
+  const insets = useSafeAreaInsets();
   const { user } = useAuthStore();
   const { selectedChild, dailyRecords, toggleActivity, resetDay, getTotalPoints } =
     useChildrenStore();
@@ -144,7 +146,10 @@ export default function ActivitiesScreen({ navigation }: ActivitiesScreenProps) 
       />
 
       {/* Reset Button */}
-      <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+      <TouchableOpacity
+        style={[styles.resetButton, { bottom: 24 + insets.bottom }]}
+        onPress={handleReset}
+      >
         <Text style={styles.resetText}>Resetar Dia</Text>
       </TouchableOpacity>
     </GestureHandlerRootView>
@@ -229,7 +234,6 @@ const styles = StyleSheet.create({
   },
   resetButton: {
     position: 'absolute',
-    bottom: 24,
     left: 24,
     right: 24,
     backgroundColor: '#fff',

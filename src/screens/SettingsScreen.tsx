@@ -23,7 +23,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Configuracoes</Text>
+        <Text style={styles.headerTitle}>Configurações</Text>
       </View>
 
       <View style={styles.content}>
@@ -53,7 +53,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           <View style={styles.menuInfo}>
             <Text style={styles.menuTitle}>Configurar Tempo de Tela</Text>
             <Text style={styles.menuSubtitle}>
-              {conversions.length} faixas de conversao
+              {conversions.length} faixas de conversão
             </Text>
           </View>
           <Text style={styles.menuArrow}>›</Text>

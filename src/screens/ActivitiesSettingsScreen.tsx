@@ -9,6 +9,7 @@ import {
   Modal,
   TextInput,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ActivitiesSettingsScreenProps } from '../navigation/types';
 import { useAuthStore, useActivitiesStore } from '../stores';
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '../constants/activities';
@@ -24,6 +25,7 @@ const CATEGORIES: ActivityCategory[] = [
 ];
 
 export default function ActivitiesSettingsScreen({ navigation }: ActivitiesSettingsScreenProps) {
+  const insets = useSafeAreaInsets();
   const { user } = useAuthStore();
   const { activities, fetchActivities, addActivity, updateActivity, deleteActivity, resetToDefaults, isLoading } =
     useActivitiesStore();
@@ -125,7 +127,7 @@ export default function ActivitiesSettingsScreen({ navigation }: ActivitiesSetti
 
   const handleReset = () => {
     Alert.alert(
-      'Restaurar Padrao',
+      'Restaurar Padrão',
       'Isso vai apagar todas as suas atividades personalizadas e restaurar a lista original. Deseja continuar?',
       [
         { text: 'Cancelar', style: 'cancel' },
@@ -138,7 +140,7 @@ export default function ActivitiesSettingsScreen({ navigation }: ActivitiesSetti
             if (error) {
               Alert.alert('Erro', error);
             } else {
-              Alert.alert('Sucesso', 'Atividades restauradas para o padrao');
+              Alert.alert('Sucesso', 'Atividades restauradas para o padrão');
             }
           },
         },
@@ -199,8 +201,11 @@ export default function ActivitiesSettingsScreen({ navigation }: ActivitiesSetti
         stickySectionHeadersEnabled={false}
       />
 
-      <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-        <Text style={styles.resetText}>Restaurar Padrao</Text>
+      <TouchableOpacity
+        style={[styles.resetButton, { bottom: 24 + insets.bottom }]}
+        onPress={handleReset}
+      >
+        <Text style={styles.resetText}>Restaurar Padrão</Text>
       </TouchableOpacity>
 
       {/* Modal para Adicionar/Editar */}
@@ -384,7 +389,6 @@ const styles = StyleSheet.create({
   },
   resetButton: {
     position: 'absolute',
-    bottom: 24,
     left: 24,
     right: 24,
     backgroundColor: '#fff',

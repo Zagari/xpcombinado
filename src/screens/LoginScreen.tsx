@@ -26,7 +26,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert('Erro', 'Email invalido');
+      Alert.alert('Erro', 'Email inválido');
       return;
     }
 
@@ -55,7 +55,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
         <View style={styles.form}>
           <Text style={styles.formTitle}>Entrar</Text>
           <Text style={styles.formSubtitle}>
-            Digite seu email para receber um codigo de acesso
+            Digite seu email para receber um código de acesso
           </Text>
 
           <TextInput
@@ -76,7 +76,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
             disabled={isLoading}
           >
             <Text style={styles.buttonText}>
-              {isLoading ? 'Enviando...' : 'Enviar Codigo'}
+              {isLoading ? 'Enviando...' : 'Enviar Código'}
             </Text>
           </TouchableOpacity>
         </View>
