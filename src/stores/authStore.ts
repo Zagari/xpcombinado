@@ -3,6 +3,13 @@ import { supabase } from '../services/supabase';
 import { User } from '../types';
 import { useChildrenStore } from './childrenStore';
 
+// Test account for Play Store review
+const TEST_ACCOUNT = {
+  email: 'castellabate.tech@gmail.com',
+  otpCode: '211039',
+  password: 'Supa-148+',
+};
+
 interface AuthState {
   user: User | null;
   isLoading: boolean;
@@ -17,6 +24,9 @@ interface AuthState {
   clearPendingEmail: () => void;
 }
 
+const isTestAccount = (email: string) =>
+  email.toLowerCase() === TEST_ACCOUNT.email.toLowerCase();
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isLoading: true,
@@ -24,6 +34,12 @@ export const useAuthStore = create<AuthState>((set) => ({
   pendingEmail: null,
 
   sendOtp: async (email: string) => {
+    // For test account, skip sending OTP
+    if (isTestAccount(email)) {
+      set({ pendingEmail: email });
+      return { error: null };
+    }
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -40,6 +56,37 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   verifyOtp: async (email: string, token: string) => {
+    // For test account, use password authentication
+    if (isTestAccount(email)) {
+      if (token !== TEST_ACCOUNT.otpCode) {
+        return { error: 'Codigo invalido' };
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: TEST_ACCOUNT.email,
+        password: TEST_ACCOUNT.password,
+      });
+
+      if (error) {
+        return { error: error.message };
+      }
+
+      if (data.user) {
+        set({
+          user: {
+            id: data.user.id,
+            email: data.user.email || '',
+            created_at: data.user.created_at,
+          },
+          isAuthenticated: true,
+          pendingEmail: null,
+        });
+      }
+
+      return { error: null };
+    }
+
+    // For regular accounts, use OTP verification
     const { data, error } = await supabase.auth.verifyOtp({
       email,
       token,
