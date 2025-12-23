@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Activity } from '../types';
+import { Activity, UserActivity } from '../types';
 
 interface ActivityCardProps {
-  activity: Activity;
+  activity: Activity | UserActivity;
   completed: boolean;
   onToggle: () => void;
 }

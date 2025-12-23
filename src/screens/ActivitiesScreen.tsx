@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,34 +9,42 @@ import {
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ActivitiesScreenProps } from '../navigation/types';
-import { useChildrenStore } from '../stores';
-import { ACTIVITIES, CATEGORY_LABELS, CATEGORY_ICONS } from '../constants/activities';
+import { useChildrenStore, useActivitiesStore, useAuthStore } from '../stores';
+import { CATEGORY_LABELS, CATEGORY_ICONS } from '../constants/activities';
 import { calculateScreenTime, getNextTier } from '../constants/screenTime';
-import { Activity, ActivityCategory } from '../types';
+import { UserActivity, ActivityCategory } from '../types';
 import ActivityCard from '../components/ActivityCard';
 
 export default function ActivitiesScreen({ navigation }: ActivitiesScreenProps) {
+  const { user } = useAuthStore();
   const { selectedChild, dailyRecords, toggleActivity, resetDay, getTotalPoints } =
     useChildrenStore();
+  const { activities, fetchActivities } = useActivitiesStore();
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchActivities(user.id);
+    }
+  }, [user?.id]);
 
   const totalPoints = getTotalPoints();
   const screenTime = calculateScreenTime(totalPoints);
   const nextTier = getNextTier(totalPoints);
 
   const sections = useMemo(() => {
-    const grouped = ACTIVITIES.reduce((acc, activity) => {
+    const grouped = activities.reduce((acc, activity) => {
       if (!acc[activity.category]) {
         acc[activity.category] = [];
       }
       acc[activity.category].push(activity);
       return acc;
-    }, {} as Record<ActivityCategory, Activity[]>);
+    }, {} as Record<ActivityCategory, UserActivity[]>);
 
     return Object.entries(grouped).map(([category, data]) => ({
       title: `${CATEGORY_ICONS[category as ActivityCategory]} ${CATEGORY_LABELS[category as ActivityCategory]}`,
       data,
     }));
-  }, []);
+  }, [activities]);
 
   const isActivityCompleted = (activityId: string) => {
     const record = dailyRecords.find((r) => r.activity_id === activityId);
@@ -68,7 +76,7 @@ export default function ActivitiesScreen({ navigation }: ActivitiesScreenProps) 
     );
   };
 
-  const renderActivity = ({ item }: { item: Activity }) => (
+  const renderActivity = ({ item }: { item: UserActivity }) => (
     <ActivityCard
       activity={item}
       completed={isActivityCompleted(item.id)}

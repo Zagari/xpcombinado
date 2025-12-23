@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { supabase } from '../services/supabase';
 import { Child, DailyRecord } from '../types';
-import { ACTIVITIES } from '../constants/activities';
+import { useActivitiesStore } from './activitiesStore';
 
 interface ChildrenState {
   children: Child[];
@@ -142,14 +142,12 @@ export const useChildrenStore = create<ChildrenState>((set, get) => ({
 
   getTotalPoints: () => {
     const { dailyRecords } = get();
+    const { getActivityPoints } = useActivitiesStore.getState();
     let total = 0;
 
     for (const record of dailyRecords) {
       if (record.completed) {
-        const activity = ACTIVITIES.find((a) => a.id === record.activity_id);
-        if (activity) {
-          total += activity.points;
-        }
+        total += getActivityPoints(record.activity_id);
       }
     }
 

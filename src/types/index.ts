@@ -39,3 +39,13 @@ export interface ScreenTimeConversion {
   minutes: number;
   label: string;
 }
+
+export interface UserActivity {
+  id: string;
+  user_id: string;
+  name: string;
+  points: number;
+  category: ActivityCategory;
+  is_custom: boolean;
+  created_at: string;
+}

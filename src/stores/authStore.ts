@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { supabase } from '../services/supabase';
 import { User } from '../types';
 import { useChildrenStore } from './childrenStore';
+import { useActivitiesStore } from './activitiesStore';
 
 // Test account for Play Store review
 const TEST_ACCOUNT = {
@@ -115,6 +116,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   signOut: async () => {
     await supabase.auth.signOut();
     useChildrenStore.getState().clearStore();
+    useActivitiesStore.getState().clearStore();
     set({ user: null, isAuthenticated: false, pendingEmail: null });
   },
 

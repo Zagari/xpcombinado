@@ -73,8 +73,18 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.greeting}>Olá!</Text>
-        <Text style={styles.email}>{user?.email}</Text>
+        <View style={styles.headerRow}>
+          <View>
+            <Text style={styles.greeting}>Ola!</Text>
+            <Text style={styles.email}>{user?.email}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.settingsButton}
+            onPress={() => navigation.navigate('Settings')}
+          >
+            <Text style={styles.settingsIcon}>⚙️</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.content}>
@@ -164,6 +174,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#6366f1',
     paddingHorizontal: 24,
     paddingVertical: 20,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  settingsButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  settingsIcon: {
+    fontSize: 24,
   },
   greeting: {
     fontSize: 28,
