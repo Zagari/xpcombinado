@@ -48,6 +48,31 @@ export default function ScreenTimeSettingsScreen({ navigation }: ScreenTimeSetti
     setModalVisible(true);
   };
 
+  const validateConversion = (newPoints: number, newMinutes: number): string | null => {
+    if (!editingConversion) return null;
+
+    // Criar lista simulada com o novo valor
+    const updatedConversions = conversions
+      .map((c) =>
+        c.id === editingConversion.id
+          ? { ...c, points: newPoints, minutes: newMinutes }
+          : c
+      )
+      .sort((a, b) => a.points - b.points);
+
+    // Verificar se os minutos estao em ordem crescente conforme os pontos aumentam
+    for (let i = 1; i < updatedConversions.length; i++) {
+      const prev = updatedConversions[i - 1];
+      const curr = updatedConversions[i];
+
+      if (curr.minutes < prev.minutes) {
+        return `Faixas com mais pontos devem ter mais tempo de tela. ${curr.points} pts (${formatMinutesLabel(curr.minutes)}) nao pode ter menos tempo que ${prev.points} pts (${formatMinutesLabel(prev.minutes)}).`;
+      }
+    }
+
+    return null;
+  };
+
   const handleSave = async () => {
     const pointsNum = parseInt(points, 10);
     const minutesNum = parseInt(minutes, 10);
@@ -63,6 +88,13 @@ export default function ScreenTimeSettingsScreen({ navigation }: ScreenTimeSetti
     }
 
     if (!editingConversion) return;
+
+    // Validar consistencia da tabela
+    const validationError = validateConversion(pointsNum, minutesNum);
+    if (validationError) {
+      Alert.alert('Erro de Validacao', validationError);
+      return;
+    }
 
     const { error } = await updateConversion(editingConversion.id, pointsNum, minutesNum);
     if (error) {
