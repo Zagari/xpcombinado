@@ -12,6 +12,8 @@ import OTPScreen from '../screens/OTPScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ActivitiesScreen from '../screens/ActivitiesScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import ActivitiesSettingsScreen from '../screens/ActivitiesSettingsScreen';
+import ScreenTimeSettingsScreen from '../screens/ScreenTimeSettingsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -70,6 +72,16 @@ export default function AppNavigator() {
               name="Settings"
               component={SettingsScreen}
               options={{ title: 'Configuracoes' }}
+            />
+            <Stack.Screen
+              name="ActivitiesSettings"
+              component={ActivitiesSettingsScreen}
+              options={{ title: 'Atividades' }}
+            />
+            <Stack.Screen
+              name="ScreenTimeSettings"
+              component={ScreenTimeSettingsScreen}
+              options={{ title: 'Tempo de Tela' }}
             />
           </>
         )}

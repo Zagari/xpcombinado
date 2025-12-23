@@ -49,3 +49,11 @@ export interface UserActivity {
   is_custom: boolean;
   created_at: string;
 }
+
+export interface UserScreenTimeConversion {
+  id: string;
+  user_id: string;
+  points: number;
+  minutes: number;
+  created_at: string;
+}

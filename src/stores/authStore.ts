@@ -3,6 +3,7 @@ import { supabase } from '../services/supabase';
 import { User } from '../types';
 import { useChildrenStore } from './childrenStore';
 import { useActivitiesStore } from './activitiesStore';
+import { useScreenTimeStore } from './screenTimeStore';
 
 // Test account for Play Store review
 const TEST_ACCOUNT = {
@@ -117,6 +118,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     await supabase.auth.signOut();
     useChildrenStore.getState().clearStore();
     useActivitiesStore.getState().clearStore();
+    useScreenTimeStore.getState().clearStore();
     set({ user: null, isAuthenticated: false, pendingEmail: null });
   },
 

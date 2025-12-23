@@ -9,9 +9,8 @@ import {
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ActivitiesScreenProps } from '../navigation/types';
-import { useChildrenStore, useActivitiesStore, useAuthStore } from '../stores';
+import { useChildrenStore, useActivitiesStore, useAuthStore, useScreenTimeStore } from '../stores';
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '../constants/activities';
-import { calculateScreenTime, getNextTier } from '../constants/screenTime';
 import { UserActivity, ActivityCategory } from '../types';
 import ActivityCard from '../components/ActivityCard';
 
@@ -20,10 +19,12 @@ export default function ActivitiesScreen({ navigation }: ActivitiesScreenProps) 
   const { selectedChild, dailyRecords, toggleActivity, resetDay, getTotalPoints } =
     useChildrenStore();
   const { activities, fetchActivities } = useActivitiesStore();
+  const { fetchConversions, calculateScreenTime, getNextTier } = useScreenTimeStore();
 
   useEffect(() => {
     if (user?.id) {
       fetchActivities(user.id);
+      fetchConversions(user.id);
     }
   }, [user?.id]);
 
