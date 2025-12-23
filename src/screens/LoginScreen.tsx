@@ -14,23 +14,30 @@ import { useAuthStore } from '../stores';
 
 export default function LoginScreen({ navigation }: LoginScreenProps) {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const signIn = useAuthStore((state) => state.signIn);
+  const sendOtp = useAuthStore((state) => state.sendOtp);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Erro', 'Preencha todos os campos');
+  const handleSendOtp = async () => {
+    if (!email) {
+      Alert.alert('Erro', 'Informe seu email');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert('Erro', 'Email invalido');
       return;
     }
 
     setIsLoading(true);
-    const { error } = await signIn(email, password);
+    const { error } = await sendOtp(email);
     setIsLoading(false);
 
     if (error) {
       Alert.alert('Erro', error);
+    } else {
+      navigation.navigate('OTP', { email });
     }
   };
 
@@ -46,6 +53,11 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
         </Text>
 
         <View style={styles.form}>
+          <Text style={styles.formTitle}>Entrar</Text>
+          <Text style={styles.formSubtitle}>
+            Digite seu email para receber um codigo de acesso
+          </Text>
+
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -55,33 +67,16 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            placeholderTextColor="#999"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
+            autoFocus
           />
 
           <TouchableOpacity
             style={[styles.button, isLoading && styles.buttonDisabled]}
-            onPress={handleLogin}
+            onPress={handleSendOtp}
             disabled={isLoading}
           >
             <Text style={styles.buttonText}>
-              {isLoading ? 'Entrando...' : 'Entrar'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.linkButton}
-            onPress={() => navigation.navigate('SignUp')}
-          >
-            <Text style={styles.linkText}>
-              Não tem conta? <Text style={styles.linkTextBold}>Criar conta</Text>
+              {isLoading ? 'Enviando...' : 'Enviar Codigo'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -123,6 +118,17 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 5,
   },
+  formTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  formSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 24,
+  },
   input: {
     backgroundColor: '#f5f5f5',
     borderRadius: 8,
@@ -144,18 +150,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '600',
-  },
-  linkButton: {
-    marginTop: 24,
-    alignItems: 'center',
-  },
-  linkText: {
-    color: '#666',
-    fontSize: 14,
-  },
-  linkTextBold: {
-    color: '#6366f1',
     fontWeight: '600',
   },
 });

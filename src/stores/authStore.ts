@@ -7,47 +7,43 @@ interface AuthState {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  pendingEmail: string | null;
 
   // Actions
-  signUp: (email: string, password: string) => Promise<{ error: string | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  sendOtp: (email: string) => Promise<{ error: string | null }>;
+  verifyOtp: (email: string, token: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   checkSession: () => Promise<void>;
+  clearPendingEmail: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isLoading: true,
   isAuthenticated: false,
+  pendingEmail: null,
 
-  signUp: async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({
+  sendOtp: async (email: string) => {
+    const { error } = await supabase.auth.signInWithOtp({
       email,
-      password,
+      options: {
+        shouldCreateUser: true,
+      },
     });
 
     if (error) {
       return { error: error.message };
     }
 
-    if (data.user) {
-      set({
-        user: {
-          id: data.user.id,
-          email: data.user.email || '',
-          created_at: data.user.created_at,
-        },
-        isAuthenticated: true,
-      });
-    }
-
+    set({ pendingEmail: email });
     return { error: null };
   },
 
-  signIn: async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
+  verifyOtp: async (email: string, token: string) => {
+    const { data, error } = await supabase.auth.verifyOtp({
       email,
-      password,
+      token,
+      type: 'email',
     });
 
     if (error) {
@@ -62,6 +58,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           created_at: data.user.created_at,
         },
         isAuthenticated: true,
+        pendingEmail: null,
       });
     }
 
@@ -71,7 +68,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   signOut: async () => {
     await supabase.auth.signOut();
     useChildrenStore.getState().clearStore();
-    set({ user: null, isAuthenticated: false });
+    set({ user: null, isAuthenticated: false, pendingEmail: null });
   },
 
   checkSession: async () => {
@@ -92,5 +89,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     } else {
       set({ user: null, isAuthenticated: false, isLoading: false });
     }
+  },
+
+  clearPendingEmail: () => {
+    set({ pendingEmail: null });
   },
 }));

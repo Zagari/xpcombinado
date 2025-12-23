@@ -8,7 +8,7 @@ import { useAuthStore } from '../stores';
 
 // Screens
 import LoginScreen from '../screens/LoginScreen';
-import SignUpScreen from '../screens/SignUpScreen';
+import OTPScreen from '../screens/OTPScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ActivitiesScreen from '../screens/ActivitiesScreen';
 
@@ -46,9 +46,11 @@ export default function AppNavigator() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="SignUp"
-              component={SignUpScreen}
-              options={{ title: 'Criar Conta' }}
+              name="OTP"
+              component={OTPScreen}
+              options={{
+                headerShown: false,
+              }}
             />
           </>
         ) : (

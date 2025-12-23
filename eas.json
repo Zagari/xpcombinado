@@ -18,11 +18,4 @@
   "submit": {
     "production": {}
   }
-  "production": {
-    "autoIncrement": true,
-    "android": {
-      "buildType": "app-bundle",
-      "gradleCommand": ":app:bundleRelease"
-    }
-  }
 }

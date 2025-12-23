@@ -1,4 +1,4 @@
 export { default as LoginScreen } from './LoginScreen';
-export { default as SignUpScreen } from './SignUpScreen';
+export { default as OTPScreen } from './OTPScreen';
 export { default as HomeScreen } from './HomeScreen';
 export { default as ActivitiesScreen } from './ActivitiesScreen';
