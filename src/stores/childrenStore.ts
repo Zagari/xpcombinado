@@ -17,6 +17,7 @@ interface ChildrenState {
   toggleActivity: (childId: string, activityId: string, date: string) => Promise<void>;
   resetDay: (childId: string, date: string) => Promise<void>;
   getTotalPoints: () => number;
+  clearStore: () => void;
 }
 
 const getTodayDate = () => new Date().toISOString().split('T')[0];
@@ -153,5 +154,14 @@ export const useChildrenStore = create<ChildrenState>((set, get) => ({
     }
 
     return total;
+  },
+
+  clearStore: () => {
+    set({
+      children: [],
+      selectedChild: null,
+      dailyRecords: [],
+      isLoading: false,
+    });
   },
 }));

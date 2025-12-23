@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { supabase } from '../services/supabase';
 import { User } from '../types';
+import { useChildrenStore } from './childrenStore';
 
 interface AuthState {
   user: User | null;
@@ -69,6 +70,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   signOut: async () => {
     await supabase.auth.signOut();
+    useChildrenStore.getState().clearStore();
     set({ user: null, isAuthenticated: false });
   },
 
