@@ -14,6 +14,7 @@ import ActivitiesScreen from '../screens/ActivitiesScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import ActivitiesSettingsScreen from '../screens/ActivitiesSettingsScreen';
 import ScreenTimeSettingsScreen from '../screens/ScreenTimeSettingsScreen';
+import PremiumScreen from '../screens/PremiumScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -82,6 +83,11 @@ export default function AppNavigator() {
               name="ScreenTimeSettings"
               component={ScreenTimeSettingsScreen}
               options={{ title: 'Tempo de Tela' }}
+            />
+            <Stack.Screen
+              name="Premium"
+              component={PremiumScreen}
+              options={{ title: 'Premium' }}
             />
           </>
         )}

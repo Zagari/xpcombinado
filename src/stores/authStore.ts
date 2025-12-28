@@ -4,6 +4,7 @@ import { User } from '../types';
 import { useChildrenStore } from './childrenStore';
 import { useActivitiesStore } from './activitiesStore';
 import { useScreenTimeStore } from './screenTimeStore';
+import { useSubscriptionStore } from './subscriptionStore';
 
 // Test account for Play Store review
 const TEST_ACCOUNT = {
@@ -119,6 +120,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     useChildrenStore.getState().clearStore();
     useActivitiesStore.getState().clearStore();
     useScreenTimeStore.getState().clearStore();
+    useSubscriptionStore.getState().clearStore();
     set({ user: null, isAuthenticated: false, pendingEmail: null });
   },
 
@@ -137,6 +139,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         isAuthenticated: true,
         isLoading: false,
       });
+      // Load subscription status
+      useSubscriptionStore.getState().fetchSubscription(data.session.user.id);
     } else {
       set({ user: null, isAuthenticated: false, isLoading: false });
     }

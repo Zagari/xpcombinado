@@ -6,17 +6,19 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SettingsScreenProps } from '../navigation/types';
-import { useAuthStore, useActivitiesStore, useScreenTimeStore } from '../stores';
+import { useAuthStore, useActivitiesStore, useScreenTimeStore, useSubscriptionStore } from '../stores';
 
 export default function SettingsScreen({ navigation }: SettingsScreenProps) {
   const { user } = useAuthStore();
   const { activities, fetchActivities } = useActivitiesStore();
   const { conversions, fetchConversions } = useScreenTimeStore();
+  const { isPremium, fetchSubscription } = useSubscriptionStore();
 
   useEffect(() => {
     if (user?.id) {
       fetchActivities(user.id);
       fetchConversions(user.id);
+      fetchSubscription(user.id);
     }
   }, [user?.id]);
 
@@ -56,6 +58,23 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
               {conversions.length} faixas de conversão
             </Text>
           </View>
+          <Text style={styles.menuArrow}>›</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.menuItem, styles.premiumMenuItem]}
+          onPress={() => navigation.navigate('Premium')}
+        >
+          <View style={[styles.menuIcon, styles.premiumMenuIcon]}>
+            <Text style={styles.menuIconText}>⭐</Text>
+          </View>
+          <View style={styles.menuInfo}>
+            <Text style={styles.menuTitle}>Premium</Text>
+            <Text style={styles.menuSubtitle}>
+              {isPremium ? 'Ativo' : 'Desbloqueie recursos exclusivos'}
+            </Text>
+          </View>
+          {isPremium && <Text style={styles.premiumBadge}>Ativo</Text>}
           <Text style={styles.menuArrow}>›</Text>
         </TouchableOpacity>
       </View>
@@ -122,5 +141,23 @@ const styles = StyleSheet.create({
   menuArrow: {
     fontSize: 24,
     color: '#ccc',
+  },
+  premiumMenuItem: {
+    borderWidth: 1,
+    borderColor: '#fbbf24',
+  },
+  premiumMenuIcon: {
+    backgroundColor: '#fef3c7',
+  },
+  premiumBadge: {
+    backgroundColor: '#10b981',
+    color: '#fff',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    fontSize: 12,
+    fontWeight: '600',
+    marginRight: 8,
+    overflow: 'hidden',
   },
 });

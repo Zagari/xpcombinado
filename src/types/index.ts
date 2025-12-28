@@ -57,3 +57,14 @@ export interface UserScreenTimeConversion {
   minutes: number;
   created_at: string;
 }
+
+export interface UserSubscription {
+  id: string;
+  user_id: string;
+  is_premium: boolean;
+  premium_source: 'manual' | 'google_play' | 'app_store';
+  subscription_id: string | null;
+  expires_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
