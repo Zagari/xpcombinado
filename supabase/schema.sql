@@ -189,3 +189,143 @@ CREATE POLICY "Users can insert their own subscription"
 CREATE POLICY "Users can update their own subscription"
   ON user_subscriptions FOR UPDATE
   USING (auth.uid() = user_id);
+
+-- =====================================================
+-- Microsoft Family Safety Integration Tables (Premium)
+-- =====================================================
+
+-- MS Family Safety connections (OAuth status per user)
+CREATE TABLE ms_family_connections (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE NOT NULL,
+  is_connected BOOLEAN DEFAULT FALSE,
+  connected_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Mapping between XPCombinado children and MS Family accounts
+CREATE TABLE ms_account_mappings (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  child_id UUID REFERENCES children(id) ON DELETE CASCADE NOT NULL,
+  ms_account_id VARCHAR(255) NOT NULL,
+  ms_account_name VARCHAR(255),
+  target_devices TEXT[] DEFAULT ARRAY['DESKTOP', 'MOBILE'],
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  UNIQUE(child_id)
+);
+
+-- Screen time sessions (active releases)
+CREATE TABLE screen_time_sessions (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  child_id UUID REFERENCES children(id) ON DELETE CASCADE NOT NULL,
+  minutes_granted INTEGER NOT NULL,
+  started_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  status VARCHAR(20) DEFAULT 'active', -- 'active', 'expired', 'cancelled'
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Indexes for MS Family Safety tables
+CREATE INDEX idx_ms_family_connections_user_id ON ms_family_connections(user_id);
+CREATE INDEX idx_ms_account_mappings_child_id ON ms_account_mappings(child_id);
+CREATE INDEX idx_screen_time_sessions_child_id ON screen_time_sessions(child_id);
+CREATE INDEX idx_screen_time_sessions_status ON screen_time_sessions(status);
+
+-- RLS Policies for ms_family_connections
+ALTER TABLE ms_family_connections ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own MS connection"
+  ON ms_family_connections FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own MS connection"
+  ON ms_family_connections FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own MS connection"
+  ON ms_family_connections FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own MS connection"
+  ON ms_family_connections FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- RLS Policies for ms_account_mappings
+ALTER TABLE ms_account_mappings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view mappings for their children"
+  ON ms_account_mappings FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM children
+      WHERE children.id = ms_account_mappings.child_id
+      AND children.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can insert mappings for their children"
+  ON ms_account_mappings FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM children
+      WHERE children.id = ms_account_mappings.child_id
+      AND children.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can update mappings for their children"
+  ON ms_account_mappings FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM children
+      WHERE children.id = ms_account_mappings.child_id
+      AND children.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can delete mappings for their children"
+  ON ms_account_mappings FOR DELETE
+  USING (
+    EXISTS (
+      SELECT 1 FROM children
+      WHERE children.id = ms_account_mappings.child_id
+      AND children.user_id = auth.uid()
+    )
+  );
+
+-- RLS Policies for screen_time_sessions
+ALTER TABLE screen_time_sessions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view sessions for their children"
+  ON screen_time_sessions FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM children
+      WHERE children.id = screen_time_sessions.child_id
+      AND children.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can insert sessions for their children"
+  ON screen_time_sessions FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM children
+      WHERE children.id = screen_time_sessions.child_id
+      AND children.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can update sessions for their children"
+  ON screen_time_sessions FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM children
+      WHERE children.id = screen_time_sessions.child_id
+      AND children.user_id = auth.uid()
+    )
+  );

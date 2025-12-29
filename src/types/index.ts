@@ -68,3 +68,35 @@ export interface UserSubscription {
   created_at: string;
   updated_at: string;
 }
+
+// Microsoft Family Safety Integration Types
+
+export interface MsFamilyConnection {
+  id: string;
+  user_id: string;
+  is_connected: boolean;
+  connected_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MsAccountMapping {
+  id: string;
+  child_id: string;
+  ms_account_id: string;
+  ms_account_name: string | null;
+  target_devices: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ScreenTimeSession {
+  id: string;
+  child_id: string;
+  minutes_granted: number;
+  started_at: string;
+  expires_at: string;
+  status: 'active' | 'expired' | 'cancelled';
+  created_at: string;
+  updated_at: string;
+}
