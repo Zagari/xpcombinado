@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,12 @@ import {
   SectionList,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ActivitiesScreenProps } from '../navigation/types';
-import { useChildrenStore, useActivitiesStore, useAuthStore, useScreenTimeStore } from '../stores';
+import { useChildrenStore, useActivitiesStore, useAuthStore, useScreenTimeStore, useSubscriptionStore, useFamilySafetyStore } from '../stores';
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '../constants/activities';
 import { UserActivity, ActivityCategory } from '../types';
 import ActivityCard from '../components/ActivityCard';
@@ -22,13 +23,82 @@ export default function ActivitiesScreen({ navigation }: ActivitiesScreenProps) 
     useChildrenStore();
   const { activities, fetchActivities } = useActivitiesStore();
   const { fetchConversions, calculateScreenTime, getNextTier } = useScreenTimeStore();
+  const { isPremium } = useSubscriptionStore();
+  const {
+    connection,
+    mappings,
+    activeSessions,
+    isLoading: isFamilySafetyLoading,
+    fetchConnection,
+    fetchMappings,
+    fetchActiveSessions,
+    releaseTime,
+    cancelSession,
+  } = useFamilySafetyStore();
+
+  const [countdown, setCountdown] = useState<string | null>(null);
+
+  // Check if this child has a MS Family mapping
+  const childMapping = useMemo(() => {
+    if (!selectedChild) return null;
+    return mappings.find((m) => m.child_id === selectedChild.id);
+  }, [selectedChild, mappings]);
+
+  // Check if this child has an active session
+  const activeSession = useMemo(() => {
+    if (!selectedChild) return null;
+    return activeSessions.find((s) => s.child_id === selectedChild.id && s.status === 'active');
+  }, [selectedChild, activeSessions]);
+
+  // Can show release button?
+  const canReleaseTime = isPremium && connection?.is_connected && childMapping && !activeSession;
 
   useEffect(() => {
     if (user?.id) {
       fetchActivities(user.id);
       fetchConversions(user.id);
+      fetchConnection(user.id);
+      fetchMappings();
+      fetchActiveSessions();
     }
   }, [user?.id]);
+
+  // Countdown timer for active session
+  useEffect(() => {
+    if (!activeSession) {
+      setCountdown(null);
+      return;
+    }
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const expires = new Date(activeSession.expires_at).getTime();
+      const diff = expires - now;
+
+      if (diff <= 0) {
+        setCountdown('Expirado');
+        fetchActiveSessions(); // Refresh to get updated status
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      if (hours > 0) {
+        setCountdown(`${hours}h ${minutes}m ${seconds}s`);
+      } else if (minutes > 0) {
+        setCountdown(`${minutes}m ${seconds}s`);
+      } else {
+        setCountdown(`${seconds}s`);
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [activeSession]);
 
   const totalPoints = getTotalPoints();
   const screenTime = calculateScreenTime(totalPoints);
@@ -73,6 +143,54 @@ export default function ActivitiesScreen({ navigation }: ActivitiesScreenProps) 
             if (!selectedChild) return;
             const today = new Date().toISOString().split('T')[0];
             await resetDay(selectedChild.id, today);
+          },
+        },
+      ]
+    );
+  };
+
+  const handleReleaseTime = () => {
+    if (!selectedChild || screenTime.minutes === 0) {
+      Alert.alert('Sem tempo', 'Complete atividades para ganhar tempo de tela.');
+      return;
+    }
+
+    Alert.alert(
+      'Liberar Tempo',
+      `Liberar ${screenTime.label} de tela para ${selectedChild.name}?\n\nOs dispositivos Windows/Android serao desbloqueados automaticamente.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Liberar',
+          onPress: async () => {
+            const { error } = await releaseTime(selectedChild.id, screenTime.minutes);
+            if (error) {
+              Alert.alert('Erro', error);
+            } else {
+              Alert.alert('Sucesso', `${screenTime.label} liberados para ${selectedChild.name}!`);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleCancelSession = () => {
+    if (!activeSession) return;
+
+    Alert.alert(
+      'Cancelar Tempo',
+      'Tem certeza que deseja cancelar o tempo liberado? Os dispositivos serao bloqueados novamente.',
+      [
+        { text: 'Nao', style: 'cancel' },
+        {
+          text: 'Sim, cancelar',
+          style: 'destructive',
+          onPress: async () => {
+            const { error } = await cancelSession(activeSession.id);
+            if (error) {
+              Alert.alert('Erro', error);
+            }
           },
         },
       ]
@@ -132,6 +250,50 @@ export default function ActivitiesScreen({ navigation }: ActivitiesScreenProps) 
           <Text style={styles.nextTierText}>
             +{nextTier.pointsNeeded} pts para {nextTier.reward}
           </Text>
+        )}
+
+        {/* Active Session Status */}
+        {activeSession && (
+          <View style={styles.sessionCard}>
+            <View style={styles.sessionInfo}>
+              <Text style={styles.sessionIcon}>🎮</Text>
+              <View style={styles.sessionDetails}>
+                <Text style={styles.sessionTitle}>Tempo Liberado</Text>
+                <Text style={styles.sessionCountdown}>
+                  Restante: {countdown || 'Calculando...'}
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.cancelSessionButton}
+              onPress={handleCancelSession}
+              disabled={isFamilySafetyLoading}
+            >
+              {isFamilySafetyLoading ? (
+                <ActivityIndicator size="small" color="#ef4444" />
+              ) : (
+                <Text style={styles.cancelSessionText}>Cancelar</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Release Time Button */}
+        {canReleaseTime && screenTime.minutes > 0 && (
+          <TouchableOpacity
+            style={styles.releaseButton}
+            onPress={handleReleaseTime}
+            disabled={isFamilySafetyLoading}
+          >
+            {isFamilySafetyLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <>
+                <Text style={styles.releaseButtonIcon}>🎮</Text>
+                <Text style={styles.releaseButtonText}>Liberar Tempo no Dispositivo</Text>
+              </>
+            )}
+          </TouchableOpacity>
         )}
       </View>
 
@@ -218,6 +380,67 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.9)',
     textAlign: 'center',
     marginTop: 12,
+  },
+  sessionCard: {
+    backgroundColor: '#10b981',
+    borderRadius: 12,
+    padding: 14,
+    marginTop: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sessionInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  sessionIcon: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  sessionDetails: {
+    flex: 1,
+  },
+  sessionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  sessionCountdown: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginTop: 2,
+  },
+  cancelSessionButton: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  cancelSessionText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  releaseButton: {
+    backgroundColor: '#10b981',
+    borderRadius: 12,
+    padding: 14,
+    marginTop: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  releaseButtonIcon: {
+    fontSize: 20,
+    marginRight: 8,
+  },
+  releaseButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   listContent: {
     padding: 16,
