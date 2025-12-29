@@ -3,3 +3,4 @@ export { useChildrenStore } from './childrenStore';
 export { useActivitiesStore } from './activitiesStore';
 export { useScreenTimeStore } from './screenTimeStore';
 export { useSubscriptionStore } from './subscriptionStore';
+export { useFamilySafetyStore } from './familySafetyStore';

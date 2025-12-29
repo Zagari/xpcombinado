@@ -9,6 +9,7 @@ export type RootStackParamList = {
   ActivitiesSettings: undefined;
   ScreenTimeSettings: undefined;
   Premium: undefined;
+  FamilySafety: undefined;
 };
 
 export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
@@ -19,3 +20,4 @@ export type SettingsScreenProps = NativeStackScreenProps<RootStackParamList, 'Se
 export type ActivitiesSettingsScreenProps = NativeStackScreenProps<RootStackParamList, 'ActivitiesSettings'>;
 export type ScreenTimeSettingsScreenProps = NativeStackScreenProps<RootStackParamList, 'ScreenTimeSettings'>;
 export type PremiumScreenProps = NativeStackScreenProps<RootStackParamList, 'Premium'>;
+export type FamilySafetyScreenProps = NativeStackScreenProps<RootStackParamList, 'FamilySafety'>;

@@ -15,6 +15,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import ActivitiesSettingsScreen from '../screens/ActivitiesSettingsScreen';
 import ScreenTimeSettingsScreen from '../screens/ScreenTimeSettingsScreen';
 import PremiumScreen from '../screens/PremiumScreen';
+import FamilySafetyScreen from '../screens/FamilySafetyScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -88,6 +89,11 @@ export default function AppNavigator() {
               name="Premium"
               component={PremiumScreen}
               options={{ title: 'Premium' }}
+            />
+            <Stack.Screen
+              name="FamilySafety"
+              component={FamilySafetyScreen}
+              options={{ title: 'Family Safety', headerShown: false }}
             />
           </>
         )}

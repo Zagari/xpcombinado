@@ -77,6 +77,24 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           {isPremium && <Text style={styles.premiumBadge}>Ativo</Text>}
           <Text style={styles.menuArrow}>›</Text>
         </TouchableOpacity>
+
+        {isPremium && (
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate('FamilySafety')}
+          >
+            <View style={[styles.menuIcon, styles.familySafetyIcon]}>
+              <Text style={styles.menuIconText}>🛡️</Text>
+            </View>
+            <View style={styles.menuInfo}>
+              <Text style={styles.menuTitle}>Microsoft Family Safety</Text>
+              <Text style={styles.menuSubtitle}>
+                Controle dispositivos Windows e Android
+              </Text>
+            </View>
+            <Text style={styles.menuArrow}>›</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -159,5 +177,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
     overflow: 'hidden',
+  },
+  familySafetyIcon: {
+    backgroundColor: '#dbeafe',
   },
 });
